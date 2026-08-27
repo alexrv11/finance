@@ -1,0 +1,56 @@
+# Promtail Helm values — DaemonSet that ships pod logs to Loki
+# Chart: https://github.com/grafana/helm-charts/tree/main/charts/promtail
+# Install: helm install promtail grafana/promtail -n monitoring -f values.yaml
+
+config:
+  clients:
+    - url: http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push
+
+  snippets:
+    # Parse structured JSON logs emitted by Envoy and Go services
+    pipelineStages:
+      - cri: {}
+      - json:
+          expressions:
+            level:     level
+            service:   service
+            trace_id:  x_request_id
+            method:    method
+            path:      path
+            status:    response_code
+      - labels:
+          level:
+          service:
+      - labeldrop:
+          - filename
+
+    # Extra labels attached to every log stream
+    extraRelabelConfigs:
+      - action: replace
+        source_labels: [__meta_kubernetes_pod_label_app]
+        target_label: service
+      - action: replace
+        source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - action: replace
+        source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+      - action: replace
+        source_labels: [__meta_kubernetes_pod_container_name]
+        target_label: container
+
+tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

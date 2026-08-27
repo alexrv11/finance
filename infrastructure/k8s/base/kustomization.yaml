@@ -6,16 +6,15 @@ namespace: finance
 resources:
   - namespace.yaml
   - configmap.yaml
+  # envoy — API gateway (replaces custom api-gateway service)
+  - envoy/configmap.yaml
+  - envoy/deployment.yaml
+  - envoy/service.yaml
   # seed — data ingestion (replicas pinned at 1, DuckDB file lock)
   - seed/pvc.yaml
   - seed/deployment.yaml
   - seed/service.yaml
   - seed/hpa.yaml
-  # api-gateway — external entry point
-  - api-gateway/deployment.yaml
-  - api-gateway/service.yaml
-  - api-gateway/hpa.yaml
-  - api-gateway/ingress.yaml
   # analytics — indicator computation
   - analytics/deployment.yaml
   - analytics/service.yaml

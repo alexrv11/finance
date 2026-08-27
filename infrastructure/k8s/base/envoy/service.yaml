@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy
+  namespace: finance
+  labels:
+    app: envoy
+spec:
+  # Type is patched per environment:
+  #   local → NodePort  (30080 → localhost:8080)
+  #   aws   → LoadBalancer (NLB via AWS LB controller)
+  type: ClusterIP
+  selector:
+    app: envoy
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+---
+# Admin is internal-only — Prometheus scrapes it via pod annotation, not this Service.
+# Exposed as a separate ClusterIP so Prometheus ServiceMonitor can also target it.
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy-admin
+  namespace: finance
+  labels:
+    app: envoy
+    component: admin
+spec:
+  type: ClusterIP
+  selector:
+    app: envoy
+  ports:
+    - name: admin
+      port: 9901
+      targetPort: admin
+      protocol: TCP

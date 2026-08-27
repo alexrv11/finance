@@ -5,7 +5,7 @@ resources:
   - ../../base
 
 patches:
-  - path: patches/api-gateway-service.yaml
+  - path: patches/envoy-service.yaml
   - path: patches/seed-pvc.yaml
 
 # Images are pulled from ECR.
@@ -16,9 +16,6 @@ patches:
 images:
   - name: finance/seed
     newName: REGISTRY/finance/seed
-    newTag: latest
-  - name: finance/api-gateway
-    newName: REGISTRY/finance/api-gateway
     newTag: latest
   - name: finance/analytics
     newName: REGISTRY/finance/analytics

@@ -1,0 +1,54 @@
+# Loki Helm values — single binary mode (simple, suitable for staging/production with moderate log volume)
+# Chart: https://github.com/grafana/loki/tree/main/production/helm/loki
+# Install: helm install loki grafana/loki -n monitoring -f values.yaml
+
+deploymentMode: SingleBinary
+
+loki:
+  auth_enabled: false
+
+  commonConfig:
+    replication_factor: 1
+
+  storage:
+    type: filesystem   # switch to s3 for production (see below)
+
+  # Production: uncomment and configure S3 backend
+  # storage:
+  #   type: s3
+  #   s3:
+  #     region: us-east-1
+  #     bucketnames: finance-loki-logs
+  #     insecure: false
+
+  schemaConfig:
+    configs:
+      - from: "2024-01-01"
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+  limits_config:
+    retention_period: 30d
+    ingestion_rate_mb: 16
+    ingestion_burst_size_mb: 32
+
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: true
+    size: 20Gi
+
+# Disable components not needed in single binary mode
+read:
+  replicas: 0
+write:
+  replicas: 0
+backend:
+  replicas: 0
+
+# ── Promtail (sidecar log shipper) ────────────────────────────────────────────
+# Deployed separately — see promtail/values.yaml

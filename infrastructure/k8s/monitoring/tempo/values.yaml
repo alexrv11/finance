@@ -1,0 +1,49 @@
+# Tempo Helm values — distributed tracing backend
+# Chart: https://github.com/grafana/helm-charts/tree/main/charts/tempo
+# Install: helm install tempo grafana/tempo -n monitoring -f values.yaml
+
+tempo:
+  retention: 720h   # 30 days
+
+  receivers:
+    # Envoy sends traces here via Zipkin protocol
+    zipkin:
+      endpoint: "0.0.0.0:9411"
+
+    # Services can also send traces via OTLP (OpenTelemetry)
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+
+  storage:
+    trace:
+      backend: local   # switch to s3 in production
+      local:
+        path: /var/tempo/traces
+      # Production S3:
+      # backend: s3
+      # s3:
+      #   bucket: finance-tempo-traces
+      #   region: us-east-1
+
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+
+persistence:
+  enabled: true
+  size: 20Gi
+
+serviceMonitor:
+  enabled: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

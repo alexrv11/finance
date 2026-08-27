@@ -4,11 +4,11 @@ kind: Kustomization
 resources:
   - ../../base
 
-# Patch api-gateway to NodePort so it is reachable at localhost:8080
+# Patch Envoy to NodePort so it is reachable at localhost:8080
 # Patch PVC to use kind's default storageClass
 # Scale services down to 1 replica to save local resources
 patches:
-  - path: patches/api-gateway-service.yaml
+  - path: patches/envoy-service.yaml
   - path: patches/seed-pvc.yaml
   - path: patches/replicas.yaml
 
@@ -17,8 +17,6 @@ patches:
 #   kind load docker-image finance/<service>:local --name finance-local
 images:
   - name: finance/seed
-    newTag: local
-  - name: finance/api-gateway
     newTag: local
   - name: finance/analytics
     newTag: local
