@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway
+  namespace: finance
+  annotations:
+    # AWS (uncomment when deploying to EKS with AWS Load Balancer Controller):
+    # kubernetes.io/ingress.class: alb
+    # alb.ingress.kubernetes.io/scheme: internet-facing
+    # alb.ingress.kubernetes.io/target-type: ip
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    # alb.ingress.kubernetes.io/certificate-arn: <ACM_CERT_ARN>
+    #
+    # Local (nginx ingress controller):
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: finance.local   # override in overlay (e.g. api.finance.io for AWS)
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  name: http

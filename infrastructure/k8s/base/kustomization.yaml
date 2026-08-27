@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: finance
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  # seed — data ingestion (replicas pinned at 1, DuckDB file lock)
+  - seed/pvc.yaml
+  - seed/deployment.yaml
+  - seed/service.yaml
+  - seed/hpa.yaml
+  # api-gateway — external entry point
+  - api-gateway/deployment.yaml
+  - api-gateway/service.yaml
+  - api-gateway/hpa.yaml
+  - api-gateway/ingress.yaml
+  # analytics — indicator computation
+  - analytics/deployment.yaml
+  - analytics/service.yaml
+  - analytics/hpa.yaml
+  # alert — watchlists and notifications
+  - alert/deployment.yaml
+  - alert/service.yaml
+  - alert/hpa.yaml

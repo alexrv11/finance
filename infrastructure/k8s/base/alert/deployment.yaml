@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert
+  namespace: finance
+  labels:
+    app: alert
+    layer: core
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: alert
+  template:
+    metadata:
+      labels:
+        app: alert
+        layer: core
+    spec:
+      containers:
+        - name: alert
+          image: finance/alert:latest
+          ports:
+            - name: grpc
+              containerPort: 50053
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+          env:
+            - name: GRPC_PORT
+              value: "50053"
+          envFrom:
+            - configMapRef:
+                name: service-config
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          livenessProbe:
+            grpc:
+              port: 50053
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            grpc:
+              port: 50053
+            initialDelaySeconds: 5
+            periodSeconds: 10

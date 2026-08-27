@@ -1,0 +1,25 @@
+# Scale down to 1 replica per service in local to reduce resource usage.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: finance
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics
+  namespace: finance
+spec:
+  replicas: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert
+  namespace: finance
+spec:
+  replicas: 1

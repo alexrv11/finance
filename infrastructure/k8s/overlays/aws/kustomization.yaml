@@ -1,0 +1,34 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - path: patches/api-gateway-service.yaml
+  - path: patches/seed-pvc.yaml
+
+# Images are pulled from ECR.
+# In CI/CD, run: kustomize edit set image finance/<svc>=<ecr_url>/<svc>:<git_sha>
+# Example ECR URL: 123456789.dkr.ecr.us-east-1.amazonaws.com/finance/<svc>
+#
+# Placeholders below — replace with real ECR URLs before applying.
+images:
+  - name: finance/seed
+    newName: REGISTRY/finance/seed
+    newTag: latest
+  - name: finance/api-gateway
+    newName: REGISTRY/finance/api-gateway
+    newTag: latest
+  - name: finance/analytics
+    newName: REGISTRY/finance/analytics
+    newTag: latest
+  - name: finance/alert
+    newName: REGISTRY/finance/alert
+    newTag: latest
+
+configMapGenerator:
+  - name: service-config
+    behavior: merge
+    literals:
+      - ENVIRONMENT=production

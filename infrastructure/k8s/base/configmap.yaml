@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-config
+  namespace: finance
+data:
+  # gRPC addresses — used by services to discover each other
+  SEED_GRPC_ADDR:      "seed:50051"
+  ANALYTICS_GRPC_ADDR: "analytics:50052"
+  ALERT_GRPC_ADDR:     "alert:50053"
+  # HTTP
+  API_GATEWAY_PORT:    "8080"
+  # Shared fetch settings
+  FETCH_TIMEOUT_SECS:  "30"
+  SCHEDULE_INTERVAL:   "0 * * * *"
+  SYMBOLS:             "AAPL,MSFT,GOOGL,AMZN,TSLA,SPY,QQQ,BTC-USD,ETH-USD"

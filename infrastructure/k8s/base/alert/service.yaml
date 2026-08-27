@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: alert
+  namespace: finance
+  labels:
+    app: alert
+spec:
+  type: ClusterIP
+  selector:
+    app: alert
+  ports:
+    - name: grpc
+      port: 50053
+      targetPort: grpc
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      targetPort: metrics
+      protocol: TCP
