@@ -1,0 +1,17 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+
+# Go
+bin/
+*.test
+
+# DuckDB data
+data/
+
+# Environment files
+.env

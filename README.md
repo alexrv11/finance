@@ -145,7 +145,7 @@ Services are exposed via Envoy on `localhost:8080`.
 |-----------|----------|--------------------------------------|
 | Docker    | any      | https://docs.docker.com/get-docker   |
 | kind      | >= 0.23  | `brew install kind`                  |
-| Terraform | >= 1.6   | `brew install terraform`             |
+| Terraform | >= 1.6   | `brew install hashicorp/tap/terraform` |
 | kubectl   | >= 1.30  | `brew install kubectl`               |
 | helm      | >= 3.12  | `brew install helm`                  |
 
